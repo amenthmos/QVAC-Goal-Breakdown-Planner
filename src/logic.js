@@ -67,7 +67,9 @@ export async function breakdownGoal(modelId, body) {
   text = text.trim().replace(/^here'?s[^:\n]*:\s*/i, "").trim();
 
   let milestones = looksUnusable(text) ? [] : parseMilestones(text);
-  if (milestones.length < 2) milestones = fallbackMilestones(goal);
+  // The system prompt promises 3-5 milestones; fewer than 3 isn't really a
+  // "breakdown" of the goal, so treat 0-2 parsed lines as unusable too.
+  if (milestones.length < 3) milestones = fallbackMilestones(goal);
   milestones = milestones.slice(0, 5);
 
   return { goal, milestones };
